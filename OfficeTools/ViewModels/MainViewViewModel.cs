@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Ursa.Controls;
+
+namespace OfficeTools.ViewModels;
+
+public class MainViewViewModel : ViewModelBase
+{
+    private MenuItem? _selectedMenuItem;
+
+    public MenuItem? SelectedMenuItem
+    {
+        get => _selectedMenuItem;
+        set => SetProperty(ref _selectedMenuItem, value);
+    }
+
+
+    public ObservableCollection<MenuItem> MenuItems { get; set; } = new()
+    {
+        new MenuItem
+        {
+            Header = "Word",
+            IconName = "word",
+            Children =
+            {
+                new MenuItem { Header = "doc", IconName = "doc" },
+                new MenuItem { Header = "docx", IconName = "docx" }
+            }
+        },
+        new MenuItem
+        {
+            Header = "Excel",
+            IconName = "excel",
+            Children =
+            {
+                new MenuItem { Header = "xls", IconName = "xls" },
+                new MenuItem { Header = "xlsx", IconName = "xlsx" }
+            }
+        }
+    };
+}
+
+public class MenuItem
+{
+    private static Random r = new();
+
+    public MenuItem()
+    {
+        NavigationCommand = new AsyncRelayCommand(OnNavigate);
+    }
+
+    public string? Header { get; set; }
+    public string IconName { get; set; }
+    public bool IsSeparator { get; set; }
+    public ICommand NavigationCommand { get; set; }
+
+    public ObservableCollection<MenuItem> Children { get; set; } = new();
+
+    private async Task OnNavigate()
+    {
+        await MessageBox.ShowOverlayAsync(Header ?? string.Empty, "Navigation result");
+    }
+
+    public IEnumerable<MenuItem> GetLeaves()
+    {
+        if (Children.Count == 0)
+        {
+            yield return this;
+        }
+
+        foreach (MenuItem child in Children)
+        {
+            var items = child.GetLeaves();
+            foreach (MenuItem item in items)
+            {
+                yield return item;
+            }
+        }
+    }
+}

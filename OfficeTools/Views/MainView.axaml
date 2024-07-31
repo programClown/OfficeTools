@@ -1,0 +1,77 @@
+﻿<UserControl
+    x:Class="OfficeTools.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:OfficeTools.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:u="https://irihi.tech/ursa"
+    xmlns:vm="using:OfficeTools.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:CompileBindings="True"
+    x:DataType="vm:MainViewViewModel"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:IconNameToPathConverter x:Key="IconConverter" />
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Left" ColumnDefinitions="Auto, Auto">
+        <Border
+            Grid.Row="0"
+            Grid.Column="0"
+            Padding="0,64,0,0"
+            HorizontalAlignment="Left"
+            Theme="{DynamicResource CardBorder}">
+            <u:NavMenu
+                Name="menu"
+                ExpandWidth="200"
+                HeaderBinding="{Binding Header}"
+                IconBinding="{Binding IconName}"
+                ItemsSource="{Binding MenuItems}"
+                SelectedItem="{Binding SelectedMenuItem}"
+                SubMenuBinding="{Binding Children}">
+                <u:NavMenu.Styles>
+                    <Style x:DataType="vm:MenuItem" Selector="u|NavMenuItem">
+                        <Setter Property="IsSeparator" Value="{Binding IsSeparator}" />
+                    </Style>
+                </u:NavMenu.Styles>
+                <u:NavMenu.IconTemplate>
+                    <DataTemplate>
+                        <Image
+                            Width="24"
+                            Height="24"
+                            RenderOptions.BitmapInterpolationMode="HighQuality"
+                            Source="{Binding Converter={StaticResource IconConverter}}" />
+                    </DataTemplate>
+                </u:NavMenu.IconTemplate>
+                <u:NavMenu.Header>
+                    <Grid HorizontalAlignment="Center" ColumnDefinitions="Auto, Auto">
+                        <Image
+                            Width="48"
+                            Height="48"
+                            Margin="4,12"
+                            u:NavMenu.CanToggle="True"
+                            RenderOptions.BitmapInterpolationMode="HighQuality"
+                            Source="/Assets/report.png" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Classes="H5"
+                            IsVisible="{Binding !#menu.IsHorizontalCollapsed}"
+                            Text="Office Tools"
+                            Theme="{DynamicResource TitleTextBlock}" />
+                    </Grid>
+                </u:NavMenu.Header>
+
+                <u:NavMenu.Footer>
+
+                    <Button Content="Footer" />
+
+                </u:NavMenu.Footer>
+            </u:NavMenu>
+        </Border>
+    </Grid>
+
+</UserControl>
