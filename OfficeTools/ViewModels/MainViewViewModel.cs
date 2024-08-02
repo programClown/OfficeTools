@@ -10,12 +10,23 @@ namespace OfficeTools.ViewModels;
 
 public class MainViewViewModel : ViewModelBase
 {
+    private object? _content;
     private MenuItem? _selectedMenuItem;
 
     public MenuItem? SelectedMenuItem
     {
         get => _selectedMenuItem;
-        set => SetProperty(ref _selectedMenuItem, value);
+        set
+        {
+            SetProperty(ref _selectedMenuItem, value);
+            OnNavigation(value);
+        }
+    }
+
+    public object? Content
+    {
+        get => _content;
+        set => SetProperty(ref _content, value);
     }
 
 
@@ -40,8 +51,23 @@ public class MainViewViewModel : ViewModelBase
                 new MenuItem { Header = "xls", IconName = "xls" },
                 new MenuItem { Header = "xlsx", IconName = "xlsx" }
             }
-        }
+        },
+        new MenuItem { IsSeparator = true },
+        new MenuItem { Header = "设置", IconName = "setting" },
+        new MenuItem { IsSeparator = true }
     };
+
+    private void OnNavigation(MenuItem? item)
+    {
+        Content = item!.Header switch
+        {
+            "doc" => new DocPageViewModel(),
+            "docx" => new DocxPageViewModel(),
+            "xls" => new XlsPageViewModel(),
+            "xlsx" => new XlsxPageViewModel(),
+            "设置" => new SettingsPageViewModel()
+        };
+    }
 }
 
 public class MenuItem

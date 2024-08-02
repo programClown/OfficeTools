@@ -26,5 +26,5 @@
             Text="Office Tools"
             TextAlignment="Center" />
     </u:UrsaWindow.TitleBarContent>
-    <views:MainView Margin="0,-64,0,0" />
+    <views:MainView Margin="-4,-64,0,-4" />
 </u:UrsaWindow>

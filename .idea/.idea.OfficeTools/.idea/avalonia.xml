@@ -4,8 +4,13 @@
     <option name="projectPerEditor">
       <map>
         <entry key="OfficeTools/App.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Views/DocPage.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Views/DocxPage.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/MainView.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/MainWindow.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Views/SettingsPage.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Views/XlsPage.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Views/Xlsx.axaml" value="OfficeTools/OfficeTools.csproj" />
       </map>
     </option>
   </component>

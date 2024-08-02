@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:OfficeTools.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OfficeTools"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:u="https://irihi.tech/ursa"
     xmlns:vm="using:OfficeTools.ViewModels"
@@ -17,12 +18,13 @@
         <converters:IconNameToPathConverter x:Key="IconConverter" />
     </UserControl.Resources>
 
-    <Grid HorizontalAlignment="Left" ColumnDefinitions="Auto, Auto">
+    <Grid HorizontalAlignment="Left" ColumnDefinitions="Auto, *">
         <Border
             Grid.Row="0"
             Grid.Column="0"
             Padding="0,64,0,0"
             HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
             Theme="{DynamicResource CardBorder}">
             <u:NavMenu
                 Name="menu"
@@ -64,14 +66,17 @@
                             Theme="{DynamicResource TitleTextBlock}" />
                     </Grid>
                 </u:NavMenu.Header>
-
-                <u:NavMenu.Footer>
-
-                    <Button Content="Footer" />
-
-                </u:NavMenu.Footer>
             </u:NavMenu>
         </Border>
+        <ContentControl
+            Grid.Column="1"
+            Margin="12,36,12,12"
+            Padding="0,64,0,0"
+            Content="{Binding Content}">
+            <ContentControl.ContentTemplate>
+                <local:ViewLocator />
+            </ContentControl.ContentTemplate>
+        </ContentControl>
     </Grid>
 
 </UserControl>
