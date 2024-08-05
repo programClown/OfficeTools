@@ -11,6 +11,7 @@
         <entry key="OfficeTools/Views/SettingsPage.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/XlsPage.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/Xlsx.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Views/XlsxPage.axaml" value="OfficeTools/OfficeTools.csproj" />
       </map>
     </option>
   </component>

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+    <ItemGroup Condition="'$(Platform)' == 'x64'">
+        <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+            <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-x64" />
+        </PropertyGroup>
+        <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+            <PackageReference PrivateAssets="None" Include="cef.redist.linux64" />
+        </PropertyGroup>
+        <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
+            <PackageReference PrivateAssets="None" Include="cef.redist.osx64" />
+        </PropertyGroup>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Platform)' == 'ARM64'">
+        <PackageReference PrivateAssets="None" Include="chromiumembeddedframework.runtime.win-arm64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.osx.arm64" />
+        <PackageReference PrivateAssets="None" Include="cef.redist.linuxarm64" />
+    </ItemGroup>
+</Project>
