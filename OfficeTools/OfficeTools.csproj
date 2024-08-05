@@ -7,8 +7,8 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
-    <Import Project="$(ProjectDir)CefGlue.CopyLocal.props"/>
-    
+    <!--    <Import Project="$(ProjectDir)CefGlue.CopyLocal.props"/>-->
+
     <ItemGroup>
         <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
@@ -26,6 +26,5 @@
         <PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.0.0-rc2"/>
         <PackageReference Include="OfficeIMO.Word" Version="0.17.0"/>
         <PackageReference Include="Semi.Avalonia" Version="11.1.0"/>
-        <PackageReference Include="WebViewControl-Avalonia" Version="3.120.4"/>
     </ItemGroup>
 </Project>
