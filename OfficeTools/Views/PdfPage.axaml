@@ -1,0 +1,126 @@
+﻿<UserControl
+    x:Class="OfficeTools.Views.PdfPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:anim="clr-namespace:Avalonia.Animation;assembly=MuPDFCore.MuPDFRenderer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.Avalonia"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mupdf="clr-namespace:MuPDFCore.MuPDFRenderer;assembly=MuPDFCore.MuPDFRenderer"
+    xmlns:u="https://irihi.tech/ursa"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,*">
+        <u:ToolBar
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            DockPanel.Dock="Top"
+            Header="PDF阅读器">
+            <u:ToolBar.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="Margin" Value="8,0" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+                <Style Selector="u|IconButton:left /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Margin" Value="-4,0" />
+                </Style>
+            </u:ToolBar.Styles>
+
+            <u:IconButton
+                Padding="4"
+                Content="打开"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="Folder" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+            <u:ToolBarSeparator />
+            <TextBlock Text="&lt;" />
+            <TextBox
+                Width="40"
+                Height="30"
+                VerticalAlignment="Center" />
+            <TextBlock Text="/" />
+            <TextBlock Text="30" />
+            <TextBlock Text="&gt;" />
+            <u:ToolBarSeparator />
+            <u:IconButton
+                Classes="Tertiary"
+                Content="缩小"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="ZoomOut" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+            <u:IconButton
+                Padding="4"
+                Classes="Tertiary"
+                Content="放大"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="ZoomIn" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+
+            <ComboBox
+                Name="Box"
+                Width="120"
+                Classes="Large"
+                SelectedIndex="0">
+                <ComboBoxItem Content="适合宽度" />
+                <ComboBoxItem Content="适合内容" />
+            </ComboBox>
+            <u:IconButton
+                Padding="4"
+                Classes="Tertiary"
+                Content="搜索"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="Search" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+            <u:ToolBarSeparator />
+            <TextBlock Text="渲染线程数：" />
+            <TextBlock Text="8" />
+            <TextBlock Text="资源缓存：" />
+            <ProgressBar
+                Width="200"
+                Classes="Primary"
+                Maximum="100"
+                Minimum="0"
+                ShowProgressText="True"
+                Value="60" />
+            <Button
+                u:ToolBar.OverflowMode="Never"
+                Classes="Primary Small"
+                Content="手动&#13;回收" />
+            <Button
+                u:ToolBar.OverflowMode="Never"
+                Classes="Primary Small"
+                Content="内存&#13;清零" />
+        </u:ToolBar>
+        <!--  The PDF renderer.  -->
+        <mupdf:PDFRenderer
+            Name="MuPDFRenderer"
+            Grid.Row="1"
+            Grid.Column="0"
+            Background="#F0F0F0"
+            ClipToBounds="True"
+            PageBackground="White"
+            PropertyChanged="RendererPropertyChanged"
+            ZoomIncrement="1.75">
+            <!--  Fancy transition so that we can zoom or pan around smoothly. Disabling this would result in better performance, though.  -->
+            <mupdf:PDFRenderer.Transitions>
+                <Transitions>
+                    <anim:RectTransition Property="DisplayArea" Duration="0:0:0:0.1" />
+                </Transitions>
+            </mupdf:PDFRenderer.Transitions>
+        </mupdf:PDFRenderer>
+    </Grid>
+</UserControl>
