@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <UTF8Encoding>true</UTF8Encoding>
     </PropertyGroup>
     <!--    <Import Project="$(ProjectDir)CefGlue.CopyLocal.props"/>-->
 

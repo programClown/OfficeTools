@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using MuPDFCore.MuPDFRenderer;
+using OfficeTools.ViewModels;
 
 namespace OfficeTools.Views;
 
@@ -12,6 +13,22 @@ public partial class PdfPage : UserControl
     public PdfPage()
     {
         InitializeComponent();
+
+        DataContext = new PdfPageViewModel(this.Find<PDFRenderer>("MuPDFRenderer"));
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        //Render the initial PDF and initialise the PDFRenderer with it.
+        (DataContext as PdfPageViewModel)!.VisualOpened();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        (DataContext as PdfPageViewModel)!.VisualClosed();
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void RendererPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -37,6 +54,7 @@ public partial class PdfPage : UserControl
             maxX += (size - width) * 0.5;
             minY -= (size - height) * 0.5;
             maxY += (size - height) * 0.5;
+
 
             var pageRect = this.FindControl<Image>("PageAreaImage");
             var pageCanavs = this.FindControl<Canvas>("PageAreaCanvas");

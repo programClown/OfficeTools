@@ -8,13 +8,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mupdf="clr-namespace:MuPDFCore.MuPDFRenderer;assembly=MuPDFCore.MuPDFRenderer"
     xmlns:u="https://irihi.tech/ursa"
+    xmlns:vm="using:OfficeTools.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    x:DataType="vm:PdfPageViewModel"
     mc:Ignorable="d">
-    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*">
         <u:ToolBar
             Grid.Row="0"
-            Grid.ColumnSpan="2"
             DockPanel.Dock="Top"
             Header="PDF阅读器">
             <u:ToolBar.Styles>
@@ -29,7 +30,8 @@
             </u:ToolBar.Styles>
 
             <u:IconButton
-                Padding="4"
+                Background="Transparent"
+                Command="{Binding OpenFileClickedCommand}"
                 Content="打开"
                 IconPlacement="Left"
                 IsLoading="False">
@@ -48,6 +50,7 @@
             <TextBlock Text="&gt;" />
             <u:ToolBarSeparator />
             <u:IconButton
+                Background="Transparent"
                 Classes="Tertiary"
                 Content="缩小"
                 IconPlacement="Left"
@@ -57,7 +60,7 @@
                 </u:IconButton.Icon>
             </u:IconButton>
             <u:IconButton
-                Padding="4"
+                Background="Transparent"
                 Classes="Tertiary"
                 Content="放大"
                 IconPlacement="Left"
@@ -70,13 +73,17 @@
             <ComboBox
                 Name="Box"
                 Width="120"
-                Classes="Large"
+                VerticalAlignment="Stretch"
+                Background="Transparent"
                 SelectedIndex="0">
                 <ComboBoxItem Content="适合宽度" />
                 <ComboBoxItem Content="适合内容" />
+                <ComboBoxItem Content="200%" />
+                <ComboBoxItem Content="100%" />
+                <ComboBoxItem Content="33.33%" />
             </ComboBox>
             <u:IconButton
-                Padding="4"
+                Background="Transparent"
                 Classes="Tertiary"
                 Content="搜索"
                 IconPlacement="Left"
@@ -109,7 +116,8 @@
         <mupdf:PDFRenderer
             Name="MuPDFRenderer"
             Grid.Row="1"
-            Grid.Column="0"
+            MinWidth="400"
+            MinHeight="400"
             Background="#F0F0F0"
             ClipToBounds="True"
             PageBackground="White"
