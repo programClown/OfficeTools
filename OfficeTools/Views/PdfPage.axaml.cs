@@ -1,8 +1,6 @@
-﻿using System;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using Avalonia.Media;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using MuPDFCore.MuPDFRenderer;
 using OfficeTools.ViewModels;
 
@@ -13,67 +11,30 @@ public partial class PdfPage : UserControl
     public PdfPage()
     {
         InitializeComponent();
+        Focusable = true;
 
-        DataContext = new PdfPageViewModel(this.Find<PDFRenderer>("MuPDFRenderer"));
+        DataContext = new PdfPageViewModel(this.FindControl<PDFRenderer>("MuPDFRenderer"));
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-
+        base.OnLoaded(e);
         //Render the initial PDF and initialise the PDFRenderer with it.
         (DataContext as PdfPageViewModel)!.VisualOpened();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnUnloaded(RoutedEventArgs e)
     {
+        base.OnUnloaded(e);
         (DataContext as PdfPageViewModel)!.VisualClosed();
-        base.OnDetachedFromVisualTree(e);
     }
 
-    private void RendererPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void OnKeyDownPageNumberInput(object? sender, KeyEventArgs e)
     {
-        if (e.Property == PDFRenderer.DisplayAreaProperty)
+        if (e.Key == Key.Enter)
         {
-            var renderer = this.FindControl<PDFRenderer>("MuPDFRenderer");
-
-            Rect displayArea = renderer.DisplayArea;
-            Rect pageSize = renderer.PageSize;
-
-            var minX = Math.Min(displayArea.Left, pageSize.Left);
-            var minY = Math.Min(displayArea.Top, pageSize.Top);
-            var maxX = Math.Max(displayArea.Right, pageSize.Right);
-            var maxY = Math.Max(displayArea.Bottom, pageSize.Bottom);
-
-            var width = maxX - minX;
-            var height = maxY - minY;
-
-            var size = Math.Max(width, height);
-
-            minX -= (size - width) * 0.5;
-            maxX += (size - width) * 0.5;
-            minY -= (size - height) * 0.5;
-            maxY += (size - height) * 0.5;
-
-
-            var pageRect = this.FindControl<Image>("PageAreaImage");
-            var pageCanavs = this.FindControl<Canvas>("PageAreaCanvas");
-            var displayRect = this.FindControl<Rectangle>("DisplayAreaRectangle");
-
-            pageRect.Width = pageSize.Width / (maxX - minX) * 200;
-            pageRect.Height = pageSize.Height / (maxY - minY) * 200;
-
-            pageCanavs.Width = pageSize.Width / (maxX - minX) * 200;
-            pageCanavs.Height = pageSize.Height / (maxY - minY) * 200;
-            pageCanavs.RenderTransform = new TranslateTransform((pageSize.Left - minX) / (maxX - minX) * 200,
-                (pageSize.Top - minY) / (maxY - minY) * 200
-            );
-
-            displayRect.Width = displayArea.Width / (maxX - minX) * 200;
-            displayRect.Height = displayArea.Height / (maxY - minY) * 200;
-            displayRect.RenderTransform = new TranslateTransform((displayArea.Left - minX) / (maxX - minX) * 200,
-                (displayArea.Top - minY) / (maxY - minY) * 200
-            );
+            Focus();
+            (DataContext as PdfPageViewModel)!.NaviToView();
         }
     }
 }

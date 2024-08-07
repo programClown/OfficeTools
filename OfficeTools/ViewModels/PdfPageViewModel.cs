@@ -5,8 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MuPDFCore;
@@ -14,7 +18,9 @@ using MuPDFCore.MuPDFRenderer;
 using VectSharp;
 using VectSharp.PDF;
 using FontFamily = VectSharp.FontFamily;
+using PixelFormats = MuPDFCore.PixelFormats;
 using Point = VectSharp.Point;
+using Rectangle = MuPDFCore.Rectangle;
 
 namespace OfficeTools.ViewModels;
 
@@ -49,19 +55,26 @@ public partial class PdfPageViewModel : ViewModelBase
     [ObservableProperty]
     private int _maxPageNumber;
 
+    [ObservableProperty]
+    private double _memoryUsedPercent;
+
+    [ObservableProperty]
+    private string _perBarMessage;
+
     private IStorageFile? _selectedFile;
+
+    [ObservableProperty]
+    private int _selectedZoomComboValue;
 
     // We set this to true when the zoom value of the PDF renderer has changed independently of the NumericUpDown (e.g., because the user has used the mouse wheel).
     // In that case, we do not feed back the update to the PDF renderer, to avoid creating a loop.
     private bool _updatingZoomFromRenderer;
 
-    private double _zoomFactor;
+    private double _zoomFactor = 1.0;
 
     public PdfPageViewModel(PDFRenderer pdfRenderer)
     {
         _pdfRenderer = pdfRenderer;
-        _zoomFactor = 1;
-
         _watcher.Changed += FileChanged;
         _pdfRenderer.PropertyChanged += PdfRendererOnPropertyChanged;
     }
@@ -73,11 +86,11 @@ public partial class PdfPageViewModel : ViewModelBase
         _context = new MuPDFContext();
         _document = new MuPDFDocument(_context, ref ms, InputFileTypes.PDF);
 
-        MaxPageNumber = 0;
+        MaxPageNumber = 1;
         await InitializeDocument(0);
 
         //Start the UI updater thread.
-        // UIUpdater();
+        UIUpdater();
     }
 
     public void VisualClosed()
@@ -95,14 +108,17 @@ public partial class PdfPageViewModel : ViewModelBase
     /// </summary>
     private async Task InitializeDocument(int pageNumber)
     {
-        //We need to re-initialise the renderer. No need to ask it to release resources here because it will do it on its own (and we don't need to dispose the Document).
-        _pdfRenderer.InitializeAsync(_document, pageNumber: pageNumber, ocrLanguage: null);
+        if (pageNumber >= 0 && pageNumber < MaxPageNumber)
+        {
+            //We need to re-initialise the renderer. No need to ask it to release resources here because it will do it on its own (and we don't need to dispose the Document).
+            await _pdfRenderer.InitializeAsync(_document, pageNumber: pageNumber, ocrLanguage: null);
 
-        CurPageNumber = _pdfRenderer.PageNumber + 1;
+            CurPageNumber = _pdfRenderer.PageNumber + 1;
 
-        _updatingZoomFromRenderer = false;
-        _zoomFactor = _pdfRenderer.Zoom;
-        _updatingZoomFromRenderer = true;
+            _updatingZoomFromRenderer = false;
+            _zoomFactor = _pdfRenderer.Zoom;
+            _updatingZoomFromRenderer = true;
+        }
     }
 
     /// <summary>
@@ -281,6 +297,11 @@ public partial class PdfPageViewModel : ViewModelBase
                         var maxSize = _context.StoreMaxSize;
 
                         var perc = currentSize / (double)maxSize;
+                        MemoryUsedPercent = perc * 100;
+                        PerBarMessage = perc.ToString("0%") + " ("
+                                                            + Math.Round(currentSize / 1024.0 / 1024.0).ToString("0")
+                                                            + "/" + Math.Round(maxSize / 1024.0 / 1024.0).ToString("0")
+                                                            + "MiB)";
                     }
 
                     //We don't need to keep polling too often.
@@ -290,6 +311,44 @@ public partial class PdfPageViewModel : ViewModelBase
         );
 
         thr.Start();
+    }
+
+    /// <summary>
+    ///     Generates a thumbnail of the page.
+    /// </summary>
+    /// <returns>A <see cref="WriteableBitmap" /> containing the thumbnail of the page.</returns>
+    private WriteableBitmap GenerateThumbnail()
+    {
+        //Render the whole page.
+        Rectangle bounds = _document.Pages[_pdfRenderer.PageNumber].Bounds;
+
+        //Determine the appropriate zoom factor to render a thumbnail of the right size for the NavigatorCanvas, taking into account DPI scaling
+        double maxDimension = Math.Max(bounds.Width, bounds.Height);
+
+        var zoom = 200 / maxDimension * ((_pdfRenderer.GetVisualRoot() as ILayoutRoot)?.LayoutScaling ?? 1);
+
+        //Get the actual size in pixels of the image.
+        RoundedRectangle roundedBounds = bounds.Round(zoom);
+
+        //Initialize the image
+        var bmp = new WriteableBitmap(new PixelSize(roundedBounds.Width, roundedBounds.Height),
+            new Vector(96, 96),
+            PixelFormat.Rgba8888,
+            AlphaFormat.Unpremul
+        );
+
+        //Render the page to the bitmap, without marshaling.
+        using (ILockedFramebuffer fb = bmp.Lock())
+        {
+            _document.Render(_pdfRenderer.PageNumber,
+                bounds,
+                zoom,
+                PixelFormats.RGBA,
+                fb.Address
+            );
+        }
+
+        return bmp;
     }
 
     private void PdfRendererOnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -373,7 +432,7 @@ public partial class PdfPageViewModel : ViewModelBase
 
                 MaxPageNumber = _document.Pages.Count;
 
-                await InitializeDocument(0);
+                InitializeDocument(0);
 
                 //Restore the DisplayArea.
                 _pdfRenderer.SetDisplayAreaNow(displayArea);
@@ -381,5 +440,112 @@ public partial class PdfPageViewModel : ViewModelBase
                 _watcher.EnableRaisingEvents = true;
             }
         );
+    }
+
+    [RelayCommand]
+    private async Task NaviPreView()
+    {
+        if (CurPageNumber == 1 && _pdfRenderer.PageNumber == 0)
+        {
+            return;
+        }
+
+        if (_document.Pages.Count > 0)
+        {
+            await InitializeDocument(CurPageNumber - 2);
+        }
+    }
+
+    [RelayCommand]
+    private async Task NaviNextView()
+    {
+        if (CurPageNumber == _document.Pages.Count && _pdfRenderer.PageNumber == _document.Pages.Count - 1)
+        {
+            return;
+        }
+
+        if (_document.Pages.Count > 0)
+        {
+            await InitializeDocument(CurPageNumber);
+        }
+    }
+
+    public async void NaviToView()
+    {
+        if (_document.Pages.Count == 0)
+        {
+            CurPageNumber = 1;
+            return;
+        }
+
+        if (CurPageNumber <= 0 || CurPageNumber > _document.Pages.Count)
+        {
+            CurPageNumber = _pdfRenderer.PageNumber + 1;
+            return;
+        }
+
+        await InitializeDocument(CurPageNumber - 1);
+    }
+
+    [RelayCommand]
+    private void ZoomView(bool isIn)
+    {
+        if (isIn) // zoomin 放大
+        {
+            _zoomFactor += 0.05;
+            _pdfRenderer.Zoom = _zoomFactor;
+        }
+        else
+        {
+            _zoomFactor -= 0.05;
+            if (_zoomFactor <= 0.05)
+            {
+                _zoomFactor = 0.05;
+            }
+
+            _pdfRenderer.Zoom = _zoomFactor;
+        }
+    }
+
+    partial void OnSelectedZoomComboValueChanged(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                _ = double.NaN; // 自定义
+                break;
+            case 1:
+                _pdfRenderer.Cover(); //适合宽度
+                break;
+            case 2:
+                _pdfRenderer.Contain(); //适合内容
+                break;
+            case 3:
+                _pdfRenderer.Zoom = 2; //200%
+                break;
+            case 4:
+                _pdfRenderer.Zoom = 1; //100%
+                break;
+            case 5:
+                _pdfRenderer.Zoom = 0.3; //30%
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(value));
+        }
+
+        _zoomFactor = _pdfRenderer.Zoom;
+    }
+
+    [RelayCommand]
+    private void ShrinkStore()
+    {
+        _context?.ShrinkStore(0.5);
+    }
+
+
+    [RelayCommand]
+    private void ClearStore()
+    {
+        _context?.ClearStore();
     }
 }

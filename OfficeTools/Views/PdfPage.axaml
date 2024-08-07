@@ -40,18 +40,23 @@
                 </u:IconButton.Icon>
             </u:IconButton>
             <u:ToolBarSeparator />
-            <TextBlock Text="&lt;" />
+            <Button Command="{Binding NaviPreViewCommand}" Content="&lt;" />
             <TextBox
+                Name="pageNumberInput"
                 Width="40"
                 Height="30"
-                VerticalAlignment="Center" />
+                VerticalAlignment="Center"
+                KeyDown="OnKeyDownPageNumberInput"
+                Text="{Binding CurPageNumber}" />
             <TextBlock Text="/" />
-            <TextBlock Text="30" />
-            <TextBlock Text="&gt;" />
+            <TextBlock Text="{Binding MaxPageNumber}" />
+            <Button Command="{Binding NaviNextViewCommand}" Content="&gt;" />
             <u:ToolBarSeparator />
             <u:IconButton
                 Background="Transparent"
                 Classes="Tertiary"
+                Command="{Binding ZoomViewCommand}"
+                CommandParameter="{x:False}"
                 Content="缩小"
                 IconPlacement="Left"
                 IsLoading="False">
@@ -62,6 +67,8 @@
             <u:IconButton
                 Background="Transparent"
                 Classes="Tertiary"
+                Command="{Binding ZoomViewCommand}"
+                CommandParameter="{x:True}"
                 Content="放大"
                 IconPlacement="Left"
                 IsLoading="False">
@@ -75,12 +82,13 @@
                 Width="120"
                 VerticalAlignment="Stretch"
                 Background="Transparent"
-                SelectedIndex="0">
+                SelectedIndex="{Binding SelectedZoomComboValue}">
+                <ComboBoxItem Content="自定义" />
                 <ComboBoxItem Content="适合宽度" />
                 <ComboBoxItem Content="适合内容" />
                 <ComboBoxItem Content="200%" />
                 <ComboBoxItem Content="100%" />
-                <ComboBoxItem Content="33.33%" />
+                <ComboBoxItem Content="30%" />
             </ComboBox>
             <u:IconButton
                 Background="Transparent"
@@ -94,22 +102,25 @@
             </u:IconButton>
             <u:ToolBarSeparator />
             <TextBlock Text="渲染线程数：" />
-            <TextBlock Text="8" />
+            <TextBlock Margin="-8,0" Text="8" />
             <TextBlock Text="资源缓存：" />
             <ProgressBar
-                Width="200"
+                Width="80"
                 Classes="Primary"
                 Maximum="100"
                 Minimum="0"
                 ShowProgressText="True"
-                Value="60" />
+                ToolTip.Tip="{Binding PerBarMessage}"
+                Value="{Binding MemoryUsedPercent}" />
             <Button
                 u:ToolBar.OverflowMode="Never"
                 Classes="Primary Small"
+                Command="{Binding ShrinkStoreCommand}"
                 Content="手动&#13;回收" />
             <Button
                 u:ToolBar.OverflowMode="Never"
                 Classes="Primary Small"
+                Command="{Binding ClearStoreCommand}"
                 Content="内存&#13;清零" />
         </u:ToolBar>
         <!--  The PDF renderer.  -->
@@ -121,7 +132,6 @@
             Background="#F0F0F0"
             ClipToBounds="True"
             PageBackground="White"
-            PropertyChanged="RendererPropertyChanged"
             ZoomIncrement="1.75">
             <!--  Fancy transition so that we can zoom or pan around smoothly. Disabling this would result in better performance, though.  -->
             <mupdf:PDFRenderer.Transitions>
