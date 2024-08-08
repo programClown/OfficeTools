@@ -98,6 +98,7 @@ public partial class PdfPageViewModel : ViewModelBase
         //Stop the UI updater thread.
         _closedHandle.Set();
 
+        _pdfRenderer.ReleaseResources();
         //Dispose the Document and Context. The PDFRenderer will dispose itself when it detects that it has been detached from the logical tree.
         _document?.Dispose();
         _context?.Dispose();

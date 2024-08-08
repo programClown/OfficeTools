@@ -3,10 +3,187 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:OfficeTools.Models"
+    xmlns:u="https://irihi.tech/ursa"
     xmlns:views="clr-namespace:OfficeTools.Views"
+    xmlns:vm="clr-namespace:OfficeTools.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    x:DataType="vm:DocPageViewModel"
     mc:Ignorable="d">
-    <views:PdfPage />
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <u:ButtonGroup
+                Classes="Secondary Borderless Small"
+                CommandBinding="{Binding InvokeCommand}"
+                CommandParameterBinding="{Binding Name}"
+                ItemsSource="{Binding SwitchButtonItems}">
+                <u:ButtonGroup.ItemTemplate>
+                    <DataTemplate x:DataType="models:ButtonItem">
+                        <TextBlock ToolTip.Tip="{Binding Tips}">
+                            <ic:SymbolIcon
+                                FontSize="16"
+                                IconVariant="Light"
+                                Symbol="{Binding Name}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </u:ButtonGroup.ItemTemplate>
+            </u:ButtonGroup>
+        </StackPanel>
+        <Grid Grid.Row="1" ColumnDefinitions="*,*">
+            <Grid Width="400" RowDefinitions="Auto,Auto,Auto">
+                <Expander
+                    Grid.Row="0"
+                    Header="文字列表"
+                    IsExpanded="False">
+                    <ListBox
+                        MaxHeight="500"
+                        u:ScrollTo.ButtonTheme="{DynamicResource SecondaryScrollToButton}"
+                        u:ScrollTo.Direction="Top"
+                        ItemsSource="{Binding ListStringItems}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    MinWidth="400"
+                                    x:DataType="x:String"
+                                    Classes="Hover"
+                                    Theme="{StaticResource CardBorder}">
+                                    <Grid ColumnDefinitions="Auto,*,*">
+                                        <Border
+                                            Width="20"
+                                            Height="20"
+                                            Background="CadetBlue"
+                                            CornerRadius="10">
+                                            <Label HorizontalAlignment="Center" Content="1" />
+                                        </Border>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="10,0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Classes="Mark"
+                                            Text="{Binding .}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="Wrap"
+                                            ToolTip.Tip="{Binding .}" />
+
+                                        <Button
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            Classes="Secondary"
+                                            Content="+"
+                                            Theme="{DynamicResource OutlineButton}"
+                                            ToolTip.Tip="修改内容" />
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Expander>
+                <Expander
+                    Grid.Row="1"
+                    Header="图像列表"
+                    IsExpanded="False">
+                    <ListBox
+                        MaxHeight="500"
+                        u:ScrollTo.ButtonTheme="{DynamicResource PrimarySmallScrollToButton}"
+                        u:ScrollTo.Direction="Top"
+                        ItemsSource="{Binding ListStringItems}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    MinWidth="400"
+                                    x:DataType="x:String"
+                                    Classes="Hover"
+                                    Theme="{StaticResource CardBorder}">
+                                    <Grid ColumnDefinitions="Auto,*,*">
+                                        <Border
+                                            Width="20"
+                                            Height="20"
+                                            Background="CadetBlue"
+                                            CornerRadius="10">
+                                            <Label HorizontalAlignment="Center" Content="1" />
+                                        </Border>
+                                        <Image
+                                            Grid.Column="1"
+                                            Width="40"
+                                            Height="40"
+                                            Margin="10,0"
+                                            Source="D:/VS2022/OfficeTools/screenshot/screenshot_01.png"
+                                            ToolTip.Tip="{Binding .}" />
+
+                                        <Button
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            Classes="Secondary"
+                                            Content="+"
+                                            Theme="{DynamicResource OutlineButton}"
+                                            ToolTip.Tip="修改内容" />
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                </Expander>
+                <Expander
+                    Grid.Row="2"
+                    Header="图表格列表"
+                    IsExpanded="False">
+                    <ListBox
+                        MaxHeight="500"
+                        u:ScrollTo.ButtonTheme="{DynamicResource PrimaryScrollToButton}"
+                        u:ScrollTo.Direction="Top"
+                        ItemsSource="{Binding ListStringItems}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    MinWidth="400"
+                                    x:DataType="x:String"
+                                    Classes="Hover"
+                                    Theme="{StaticResource CardBorder}">
+                                    <Grid ColumnDefinitions="Auto,*,*">
+                                        <Border
+                                            Width="20"
+                                            Height="20"
+                                            Background="CadetBlue"
+                                            CornerRadius="10">
+                                            <Label HorizontalAlignment="Center" Content="1" />
+                                        </Border>
+                                        <ic:SymbolIcon
+                                            Grid.Column="1"
+                                            FontSize="32"
+                                            IconVariant="Light"
+                                            Symbol="Table" />
+
+                                        <Button
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            Classes="Secondary"
+                                            Content="+"
+                                            Theme="{DynamicResource OutlineButton}"
+                                            ToolTip.Tip="修改内容" />
+
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                </Expander>
+            </Grid>
+
+            <views:PdfPage Grid.Column="1" />
+        </Grid>
+    </Grid>
 </UserControl>

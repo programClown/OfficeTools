@@ -102,10 +102,11 @@
             </u:IconButton>
             <u:ToolBarSeparator />
             <TextBlock Text="渲染线程数：" />
-            <TextBlock Margin="-8,0" Text="8" />
+            <TextBlock Margin="-8,0" Text="{Binding #MuPDFRenderer.RenderThreadCount}" />
             <TextBlock Text="资源缓存：" />
             <ProgressBar
                 Width="80"
+                MinWidth="0"
                 Classes="Primary"
                 Maximum="100"
                 Minimum="0"

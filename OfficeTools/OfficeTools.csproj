@@ -11,7 +11,6 @@
     <!--    <Import Project="$(ProjectDir)CefGlue.CopyLocal.props"/>-->
 
     <ItemGroup>
-        <Folder Include="Models\"/>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 

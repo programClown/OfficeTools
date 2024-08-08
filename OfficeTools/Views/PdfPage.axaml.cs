@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using MuPDFCore.MuPDFRenderer;
@@ -18,6 +19,7 @@ public partial class PdfPage : UserControl
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
+        Console.WriteLine("OnLoaded");
         base.OnLoaded(e);
         //Render the initial PDF and initialise the PDFRenderer with it.
         (DataContext as PdfPageViewModel)!.VisualOpened();
@@ -25,8 +27,9 @@ public partial class PdfPage : UserControl
 
     protected override void OnUnloaded(RoutedEventArgs e)
     {
-        base.OnUnloaded(e);
+        Console.WriteLine("OnUnloaded");
         (DataContext as PdfPageViewModel)!.VisualClosed();
+        base.OnUnloaded(e);
     }
 
     private void OnKeyDownPageNumberInput(object? sender, KeyEventArgs e)
