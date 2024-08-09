@@ -1,17 +1,19 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Media;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing.Text;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OfficeTools.Controls;
 using OfficeTools.Models;
+using SkiaSharp;
+using System.Collections.ObjectModel;
 using Ursa.Common;
 using Ursa.Controls;
 using Ursa.Controls.Options;
-using FontFamily = System.Drawing.FontFamily;
+using FontFamily = VectSharp.FontFamily;
 
 namespace OfficeTools.ViewModels;
 
@@ -37,10 +39,15 @@ public partial class DocPageViewModel : ViewModelBase
 
     public DocPageViewModel()
     {
-        var fonts = new InstalledFontCollection();
-        foreach (FontFamily font in fonts.Families)
+        // foreach (var fontFamily in FontFamily.StandardFamilies)
+        // {
+        //     FontFamilyNames.Add(fontFamily);
+        // }
+
+        var ft = SKFontManager.Default.FontFamilyCount;
+        for (int i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
         {
-            FontFamilyNames.Add(font.Name);
+            FontFamilyNames.Add(SKFontManager.Default.GetFamilyName(i));
         }
 
         WordCover = new WordCoverItem();

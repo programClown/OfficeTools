@@ -28,7 +28,6 @@
         <PackageReference Include="OfficeIMO.Word" Version="0.17.0"/>
         <PackageReference Include="PDFtoImage" Version="4.1.0"/>
         <PackageReference Include="Semi.Avalonia" Version="11.1.0"/>
-        <PackageReference Include="System.Drawing.Common" Version="8.0.7"/>
         <PackageReference Include="VectSharp.PDF" Version="3.1.0"/>
     </ItemGroup>
 </Project>
