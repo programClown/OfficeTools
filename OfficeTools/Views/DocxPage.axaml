@@ -10,13 +10,19 @@
     d:DesignWidth="800"
     x:DataType="vm:DocxPageViewModel"
     mc:Ignorable="d">
-    <HeaderedContentControl Header="xxxx">
-        <ListBox
-            u:ScrollTo.ButtonTheme="{DynamicResource PrimaryScrollToButton}"
-            u:ScrollTo.Direction="Top"
-            ItemsSource="{Binding ListStringItems}"
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ScrollViewer.VerticalScrollBarVisibility="Auto" />
-    </HeaderedContentControl>
+    <Grid RowDefinitions="*,Auto">
+        <HeaderedContentControl Header="xxxx">
+            <ListBox
+                u:ScrollTo.ButtonTheme="{DynamicResource PrimaryScrollToButton}"
+                u:ScrollTo.Direction="Top"
+                ItemsSource="{Binding ListStringItems}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollBarVisibility="Auto" />
+        </HeaderedContentControl>
+
+        <TextBlock Grid.Row="1">
+            11111111111111111111111111
+        </TextBlock>
+    </Grid>
 
 </UserControl>
