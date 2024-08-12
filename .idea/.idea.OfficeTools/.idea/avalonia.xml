@@ -4,6 +4,7 @@
     <option name="projectPerEditor">
       <map>
         <entry key="OfficeTools/App.axaml" value="OfficeTools/OfficeTools.csproj" />
+        <entry key="OfficeTools/Controls/WordPlainDialog.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/DocPage.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/DocxPage.axaml" value="OfficeTools/OfficeTools.csproj" />
         <entry key="OfficeTools/Views/MainView.axaml" value="OfficeTools/OfficeTools.csproj" />

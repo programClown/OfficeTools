@@ -1,7 +1,6 @@
-﻿using Avalonia;
-using Avalonia.Media;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,11 +8,9 @@ using CommunityToolkit.Mvvm.Input;
 using OfficeTools.Controls;
 using OfficeTools.Models;
 using SkiaSharp;
-using System.Collections.ObjectModel;
 using Ursa.Common;
 using Ursa.Controls;
 using Ursa.Controls.Options;
-using FontFamily = VectSharp.FontFamily;
 
 namespace OfficeTools.ViewModels;
 
@@ -35,7 +32,7 @@ public partial class DocPageViewModel : ViewModelBase
     private WordCoverItem _wordCover;
 
     [ObservableProperty]
-    private List<WordFromItem> _wordFromItems;
+    private List<WordFormItem> _wordFromItems;
 
     public DocPageViewModel()
     {
@@ -45,13 +42,13 @@ public partial class DocPageViewModel : ViewModelBase
         // }
 
         var ft = SKFontManager.Default.FontFamilyCount;
-        for (int i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
+        for (var i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
         {
             FontFamilyNames.Add(SKFontManager.Default.GetFamilyName(i));
         }
 
         WordCover = new WordCoverItem();
-        WordFromItems = new List<WordFromItem> { new() { Id = 0 }, new() { Id = 1 } };
+        WordFromItems = new List<WordFormItem> { new() { Id = 0 }, new() { Id = 1 } };
     }
 
     public ObservableCollection<ButtonItem> SwitchButtonItems { get; set; } = new()
@@ -75,10 +72,11 @@ public partial class DocPageViewModel : ViewModelBase
             "LocalHost",
             new DrawerOptions
             {
-                Title = "Please select a date",
+                Title = "请给doc文件添加内容",
                 Position = Position.Left,
                 Buttons = DialogButton.OKCancel,
-                CanLightDismiss = true
+                CanLightDismiss = true,
+                MinWidth = 600
             }
         );
 
@@ -108,6 +106,6 @@ public partial class DocPageViewModel : ViewModelBase
     private void ClearPanel()
     {
         WordCover = new WordCoverItem();
-        WordFromItems = new List<WordFromItem> { new() { Id = 0 }, new() { Id = 1 } };
+        WordFromItems = new List<WordFormItem> { new() { Id = 0 }, new() { Id = 1 } };
     }
 }

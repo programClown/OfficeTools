@@ -3,15 +3,67 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.Avalonia"
     xmlns:local="using:OfficeTools.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:u="https://irihi.tech/ursa"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:CompileBindings="True"
     x:DataType="local:WordPlainDialogViewModel"
     mc:Ignorable="d">
-    <StackPanel>
-        <Calendar SelectedDate="{Binding Date}" />
-        <TextBlock Text="{Binding Text}" TextWrapping="Wrap" />
-    </StackPanel>
+    <Grid RowDefinitions="Auto, *">
+        <StackPanel Orientation="Horizontal" Spacing="20">
+            <u:IconButton
+                Command="{Binding AddWordCommand}"
+                Content="添加文字"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="CommentAdd" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+            <u:IconButton
+                Command="{Binding AddImageCommand}"
+                Content="添加图片"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="ImageAdd" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+            <u:IconButton
+                Command="{Binding AddTableCommand}"
+                Content="添加图表"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="TableAdd" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+        </StackPanel>
+        <HeaderedContentControl
+            Grid.Row="1"
+            Header="添加内容列表"
+            Theme="{DynamicResource GroupBox}">
+            <ListBox ItemsSource="{Binding WordPlainItems}" Theme="{DynamicResource PureCardRadioGroupListBox}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Theme="{DynamicResource CardBorder}">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{Binding Id}" />
+                                <TextBlock Text="{Binding ContentType}" />
+                                <Label Content="{Binding ContentType}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </HeaderedContentControl>
+    </Grid>
 </UserControl>

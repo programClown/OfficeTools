@@ -58,7 +58,7 @@ public class WordCoverItem : ObservableObject
     }
 }
 
-public class WordFromItem : ObservableObject
+public class WordFormItem : ObservableObject
 {
     private string _firstLevelContent = "这是第一段内容";
     private string _firstLevelFontFamily;

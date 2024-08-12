@@ -1,0 +1,96 @@
+﻿<UserControl
+    x:Class="OfficeTools.Controls.AddWordImageTableDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ic="using:FluentIcons.Avalonia"
+    xmlns:local="using:OfficeTools.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OfficeTools.Models"
+    xmlns:u="https://irihi.tech/ursa"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:CompileBindings="True"
+    x:DataType="local:AddWordImageTableDialogViewModel"
+    mc:Ignorable="d">
+
+    <Panel MinWidth="400">
+        <StackPanel IsVisible="{Binding IsWordAddPlainVisible}" Spacing="10">
+            <TextBox
+                Height="200"
+                AcceptsReturn="True"
+                Classes="TextArea"
+                Text="{Binding WordContent}" />
+        </StackPanel>
+
+        <StackPanel IsVisible="{Binding IsImageAddPlainVisible}" Spacing="10">
+            <u:IconButton
+                Click="OpenImageFile"
+                Content="选择图片"
+                IconPlacement="Left"
+                IsLoading="False">
+                <u:IconButton.Icon>
+                    <ic:SymbolIcon IconVariant="Filled" Symbol="OpenFolder" />
+                </u:IconButton.Icon>
+            </u:IconButton>
+            <TextBlock Text="{Binding ImageFile}" />
+            <u:ImageViewer
+                Name="imageViewer"
+                Width="200"
+                Height="200"
+                MinScale="0.5" />
+        </StackPanel>
+
+        <StackPanel IsVisible="{Binding IsTableAddPlainVisible}" Spacing="10">
+            <Button Command="{Binding AddNewSongCommand}" Content="添加新行" />
+            <DataGrid
+                Width="1000"
+                Height="400"
+                Margin="8"
+                ItemsSource="{Binding SongGridData}">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn
+                        Width="2*"
+                        Binding="{Binding IsSelected}"
+                        Header="Select"
+                        IsThreeState="False" />
+                    <DataGridTextColumn
+                        Width="6*"
+                        x:DataType="models:SongViewModel"
+                        Binding="{Binding Title}"
+                        FontSize="16"
+                        Header="Title" />
+                    <DataGridTextColumn
+                        Width="6*"
+                        x:DataType="models:SongViewModel"
+                        Binding="{Binding Artist}"
+                        Header="Artist" />
+                    <DataGridTextColumn
+                        Width="6*"
+                        x:DataType="models:SongViewModel"
+                        Binding="{Binding Album}"
+                        Header="Album" />
+                    <DataGridTemplateColumn Width="2*" Header="Comments">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding CountOfComment}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <NumericUpDown
+                                    HorizontalAlignment="Stretch"
+                                    FormatString="N0"
+                                    Minimum="0"
+                                    Value="{Binding CountOfComment}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Panel>
+</UserControl>

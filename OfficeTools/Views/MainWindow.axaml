@@ -15,6 +15,8 @@
     Icon="/Assets/logo.png"
     IsFullScreenButtonVisible="{OnPlatform True,
                                            macOS=False}"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Maximized"
     mc:Ignorable="d">
 
     <u:UrsaWindow.RightContent>

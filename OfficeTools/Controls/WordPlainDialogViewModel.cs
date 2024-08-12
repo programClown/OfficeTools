@@ -1,28 +1,62 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using OfficeTools.Models;
+using OfficeTools.ViewModels;
+using Ursa.Controls;
 
 namespace OfficeTools.Controls;
 
-public class WordPlainDialogViewModel : ObservableObject
+public partial class WordPlainDialogViewModel : ViewModelBase
 {
-    private DateTime? _date;
-
-    private string? _text;
+    [ObservableProperty]
+    private ObservableCollection<WordPlainItem> _wordPlainItems;
 
     public WordPlainDialogViewModel()
     {
-        Text = "I am PlainDialogViewModel!";
+        WordPlainItems = new ObservableCollection<WordPlainItem>();
     }
 
-    public DateTime? Date
+    [RelayCommand]
+    private async Task AddWord()
     {
-        get => _date;
-        set => SetProperty(ref _date, value);
+        var vm = new AddWordImageTableDialogViewModel(PlainDialogType.WordPlain);
+        DialogResult result = await Dialog.ShowModal<AddWordImageTableDialog, AddWordImageTableDialogViewModel>(
+            vm,
+            null,
+            new DialogOptions
+            {
+                Title = "写段文字吧", Mode = DialogMode.Info, Button = DialogButton.YesNo, ShowInTaskBar = false
+            }
+        );
     }
 
-    public string? Text
+    [RelayCommand]
+    private async Task AddImage()
     {
-        get => _text;
-        set => SetProperty(ref _text, value);
+        var vm = new AddWordImageTableDialogViewModel(PlainDialogType.ImagePlain);
+        DialogResult result = await Dialog.ShowModal<AddWordImageTableDialog, AddWordImageTableDialogViewModel>(
+            vm,
+            null,
+            new DialogOptions
+            {
+                Title = "加个图片吧", Mode = DialogMode.Info, Button = DialogButton.YesNo, ShowInTaskBar = false
+            }
+        );
+    }
+
+    [RelayCommand]
+    private async Task AddTable()
+    {
+        var vm = new AddWordImageTableDialogViewModel(PlainDialogType.TablePlain);
+        DialogResult result = await Dialog.ShowModal<AddWordImageTableDialog, AddWordImageTableDialogViewModel>(
+            vm,
+            null,
+            new DialogOptions
+            {
+                Title = "加个表格吧", Mode = DialogMode.Info, Button = DialogButton.YesNo, ShowInTaskBar = false
+            }
+        );
     }
 }
