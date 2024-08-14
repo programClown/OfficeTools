@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fluentIcons="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Width="800"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="ctrls:ExceptionDialogViewModel"
@@ -48,9 +49,7 @@
                                     TextWrapping="Wrap" />
                             </Border>
                             <!--  Inner exception  -->
-                            <TextBlock
-                                IsVisible="{Binding InnerException, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                Text="内部异常" />
+                            <TextBlock IsVisible="{Binding InnerException, Converter={x:Static ObjectConverters.IsNotNull}}" Text="内部异常" />
                             <Border
                                 Classes="Hover"
                                 IsVisible="{Binding InnerException, Converter={x:Static ObjectConverters.IsNotNull}}"
