@@ -1,0 +1,94 @@
+<UserControl
+    x:Class="OfficeTools.Controls.ExceptionDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctrls="using:OfficeTools.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fluentIcons="clr-namespace:FluentIcons.Avalonia.Fluent;assembly=FluentIcons.Avalonia.Fluent"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="ctrls:ExceptionDialogViewModel"
+    mc:Ignorable="d">
+    <Grid RowDefinitions="auto,*,auto">
+        <Grid Grid.Row="1" RowDefinitions="auto,*,auto">
+            <!--  Info  -->
+            <TextBlock
+                Grid.Row="0"
+                Margin="16"
+                VerticalAlignment="Top"
+                Text="程序发生异常"
+                TextWrapping="Wrap" />
+
+            <!--  Exception details  -->
+            <DockPanel Grid.Row="1">
+                <Expander
+                    Margin="16,0,16,0"
+                    Padding="12,12,12,12"
+                    VerticalAlignment="Top"
+                    Header="{Binding ExceptionType, Mode=OneWay, TargetNullValue=-, FallbackValue=Unknown Exception}"
+                    IsExpanded="True">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel DataContext="{Binding Exception}" Spacing="4">
+                            <!--  Exception Message  -->
+                            <TextBlock Text="详细信息" />
+                            <SelectableTextBlock
+                                Margin="0,0,0,8"
+                                SelectionBrush="DodgerBlue"
+                                Text="{Binding Message}"
+                                TextWrapping="WrapWithOverflow" />
+                            <!--  Callstack  -->
+                            <TextBlock Text="调用栈" />
+                            <Border Classes="Hover" Theme="{StaticResource CardBorder}">
+                                <SelectableTextBlock
+                                    FontFamily="Cascadia Code,Consolas,Menlo,Monospace,DejaVu Sans Mono,monospace"
+                                    FontSize="13"
+                                    SelectionBrush="DodgerBlue"
+                                    Text="{Binding StackTrace}"
+                                    TextWrapping="Wrap" />
+                            </Border>
+                            <!--  Inner exception  -->
+                            <TextBlock
+                                IsVisible="{Binding InnerException, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                Text="内部异常" />
+                            <Border
+                                Classes="Hover"
+                                IsVisible="{Binding InnerException, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                Theme="{StaticResource CardBorder}">
+                                <SelectableTextBlock
+                                    FontFamily="Cascadia Code,Consolas,Menlo,Monospace,DejaVu Sans Mono,monospace"
+                                    FontSize="13"
+                                    SelectionBrush="DodgerBlue"
+                                    Text="{Binding InnerException}"
+                                    TextWrapping="Wrap" />
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Expander>
+            </DockPanel>
+
+            <StackPanel
+                Grid.Row="2"
+                Margin="16"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal"
+                Spacing="12">
+                <!--  Copy Button  -->
+                <Button
+                    Name="CopyButton"
+                    Padding="12,8"
+                    Click="CopyButton_OnClick">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <fluentIcons:SymbolIcon
+                            Margin="0,1,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Symbol="Copy" />
+                        <TextBlock Text="复制详情" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>

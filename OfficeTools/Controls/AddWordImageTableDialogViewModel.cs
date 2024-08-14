@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OfficeTools.Models;
 using OfficeTools.ViewModels;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OfficeTools.Controls;
 
@@ -21,7 +21,6 @@ public partial class AddWordImageTableDialogViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isImageAddPlainVisible;
-
 
     [ObservableProperty]
     private bool _isTableAddPlainVisible;
@@ -59,11 +58,13 @@ public partial class AddWordImageTableDialogViewModel : ViewModelBase
                 IsImageAddPlainVisible = false;
                 IsTableAddPlainVisible = false;
                 break;
+
             case PlainDialogType.ImagePlain:
                 IsWordAddPlainVisible = false;
                 IsImageAddPlainVisible = true;
                 IsTableAddPlainVisible = false;
                 break;
+
             case PlainDialogType.TablePlain:
                 IsWordAddPlainVisible = false;
                 IsImageAddPlainVisible = false;

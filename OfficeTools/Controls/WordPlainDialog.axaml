@@ -46,19 +46,28 @@
             Grid.Row="1"
             Header="添加内容列表"
             Theme="{DynamicResource GroupBox}">
-            <ListBox ItemsSource="{Binding WordPlainItems}" Theme="{DynamicResource PureCardRadioGroupListBox}">
+            <ListBox
+                ItemsSource="{Binding WordPlainItems}"
+                SelectedIndex="{Binding SelectedId}"
+                Theme="{DynamicResource PureCardRadioGroupListBox}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Vertical" />
                     </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
+                <ListBox.ContextFlyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Command="{Binding EditItemCommand}" Header="编辑" />
+                        <MenuItem Command="{Binding DeleteItemCommand}" Header="删除" />
+                    </MenuFlyout>
+                </ListBox.ContextFlyout>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border Theme="{DynamicResource CardBorder}">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="{Binding Id}" />
                                 <TextBlock Text="{Binding ContentType}" />
-                                <Label Content="{Binding ContentType}" />
+                                <Label Content="{Binding Content}" />
                             </StackPanel>
                         </Border>
                     </DataTemplate>
