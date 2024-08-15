@@ -1,13 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using OfficeTools.Controls;
-using OfficeTools.Models;
-using SkiaSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using OfficeTools.Controls;
+using OfficeTools.Models;
+using SkiaSharp;
 using Ursa.Common;
 using Ursa.Controls;
 using Ursa.Controls.Options;
@@ -16,8 +16,6 @@ namespace OfficeTools.ViewModels;
 
 public partial class DocPageViewModel : ViewModelBase
 {
-    [ObservableProperty] private DialogResult? _defaultResult;
-
     [ObservableProperty]
     private List<string> _fontFamilyNames = new();
 
@@ -41,8 +39,8 @@ public partial class DocPageViewModel : ViewModelBase
         //     FontFamilyNames.Add(fontFamily);
         // }
 
-        int ft = SKFontManager.Default.FontFamilyCount;
-        for (int i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
+        var ft = SKFontManager.Default.FontFamilyCount;
+        for (var i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
         {
             FontFamilyNames.Add(SKFontManager.Default.GetFamilyName(i));
         }
@@ -64,11 +62,10 @@ public partial class DocPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task AddFisrtLevel(int id)
     {
-        throw new Exception("test");
         var vm = new WordPlainDialogViewModel();
         IsOperateEnable = false;
         HostControlWidth = 1600;
-        DefaultResult = await Drawer.ShowModal<WordPlainDialog, WordPlainDialogViewModel>(
+        DialogResult result = await Drawer.ShowModal<WordPlainDialog, WordPlainDialogViewModel>(
             vm,
             "LocalHost",
             new DrawerOptions
@@ -76,11 +73,12 @@ public partial class DocPageViewModel : ViewModelBase
                 Title = "请给doc文件添加内容",
                 Position = Position.Left,
                 Buttons = DialogButton.OKCancel,
-                CanLightDismiss = true,
+                CanLightDismiss = false,
                 MinWidth = 600
             }
         );
 
+        vm.ToJSON();
         HostControlWidth = 0;
         IsOperateEnable = true;
     }

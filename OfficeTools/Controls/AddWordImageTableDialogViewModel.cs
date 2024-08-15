@@ -1,9 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OfficeTools.Models;
 using OfficeTools.ViewModels;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace OfficeTools.Controls;
 
@@ -16,6 +21,9 @@ public enum PlainDialogType
 
 public partial class AddWordImageTableDialogViewModel : ViewModelBase
 {
+    [ObservableProperty]
+    private Bitmap? _imageBitmap;
+
     [ObservableProperty]
     private string _imageFile;
 
@@ -41,6 +49,8 @@ public partial class AddWordImageTableDialogViewModel : ViewModelBase
                     Artist = a.Artist,
                     Album = a.Album,
                     CountOfComment = a.CountOfComment,
+                    Duration = a.Duration,
+                    NetEaseId = int.Parse(a.Url.Substring(a.Url.LastIndexOf("=") + 1)),
                     IsSelected = false
                 }
             )
@@ -77,5 +87,26 @@ public partial class AddWordImageTableDialogViewModel : ViewModelBase
     private void AddNewSong()
     {
         SongGridData.Add(new SongViewModel());
+    }
+
+    [RelayCommand]
+    private async Task OpenImageFile()
+    {
+        if (App.StorageProvider is null) return;
+
+        var result = await App.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Open File",
+                FileTypeFilter = new List<FilePickerFileType> { FilePickerFileTypes.ImageAll },
+                AllowMultiple = true
+            }
+        );
+
+        if (result.Count > 0)
+        {
+            ImageFile = result[0].Path.LocalPath;
+            Stream stream = await result[0].OpenReadAsync();
+            ImageBitmap = new Bitmap(stream);
+        }
     }
 }

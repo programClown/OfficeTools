@@ -25,7 +25,7 @@
 
         <StackPanel IsVisible="{Binding IsImageAddPlainVisible}" Spacing="10">
             <u:IconButton
-                Click="OpenImageFile"
+                Command="{Binding OpenImageFileCommand}"
                 Content="选择图片"
                 IconPlacement="Left"
                 IsLoading="False">
@@ -35,10 +35,10 @@
             </u:IconButton>
             <TextBlock Text="{Binding ImageFile}" />
             <u:ImageViewer
-                Name="imageViewer"
                 Width="200"
                 Height="200"
-                MinScale="0.5" />
+                MinScale="0.5"
+                Source="{Binding ImageBitmap}" />
         </StackPanel>
 
         <StackPanel IsVisible="{Binding IsTableAddPlainVisible}" Spacing="10">

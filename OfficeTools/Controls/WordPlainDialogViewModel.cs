@@ -1,9 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Unicode;
+using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OfficeTools.Models;
 using OfficeTools.ViewModels;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Ursa.Controls;
 
 namespace OfficeTools.Controls;
@@ -19,7 +29,12 @@ public partial class WordPlainDialogViewModel : ViewModelBase
     public WordPlainDialogViewModel()
     {
         WordPlainItems = new ObservableCollection<WordPlainItem>();
+        TableSongDict = new Dictionary<int, IEnumerable<Song>>();
     }
+
+    public Dictionary<int, IEnumerable<Song>> TableSongDict { get; }
+
+    private int GetMaxId => WordPlainItems.Count == 0 ? 0 : WordPlainItems.Max(s => s.Id);
 
     [RelayCommand]
     private async Task AddWord()
@@ -33,14 +48,10 @@ public partial class WordPlainDialogViewModel : ViewModelBase
                 Title = "写段文字吧", Mode = DialogMode.Info, Button = DialogButton.YesNo, ShowInTaskBar = false
             }
         );
+
         if (result == DialogResult.Yes && !string.IsNullOrEmpty(vm.WordContent))
         {
-            WordPlainItems.Add(new WordPlainItem
-            {
-                Id = GetMaxId(),
-                ContentType = "文字",
-                Content = vm.WordContent
-            });
+            WordPlainItems.Add(new WordPlainItem { Id = GetMaxId + 1, ContentType = "文字", Content = vm.WordContent });
         }
     }
 
@@ -59,12 +70,7 @@ public partial class WordPlainDialogViewModel : ViewModelBase
 
         if (result == DialogResult.Yes && !string.IsNullOrEmpty(vm.ImageFile))
         {
-            WordPlainItems.Add(new WordPlainItem
-            {
-                Id = GetMaxId(),
-                ContentType = "图片",
-                Content = vm.ImageFile
-            });
+            WordPlainItems.Add(new WordPlainItem { Id = GetMaxId + 1, ContentType = "图片", Content = vm.ImageFile });
         }
     }
 
@@ -83,12 +89,20 @@ public partial class WordPlainDialogViewModel : ViewModelBase
 
         if (result == DialogResult.Yes && vm.SongGridData.Count > 0)
         {
+            var newId = GetMaxId + 1;
             WordPlainItems.Add(new WordPlainItem
-            {
-                Id = GetMaxId(),
-                ContentType = "表格",
-                Content = $"歌曲{vm.SongGridData.Count}首"
-            });
+                {
+                    Id = newId, ContentType = "表格", Content = $"歌曲{vm.SongGridData.Count}首"
+                }
+            );
+
+            TableSongDict.Add(newId,
+                vm.SongGridData.Select(a =>
+                    new Song(a.Title, a.Artist, 0, 0, a.Album, a.CountOfComment, a.NetEaseId) { Duration = a.Duration }
+                )
+            );
+
+            Console.WriteLine(TableSongDict[newId].Count());
         }
     }
 
@@ -100,7 +114,7 @@ public partial class WordPlainDialogViewModel : ViewModelBase
         {
             case "文字":
                 var vm = new AddWordImageTableDialogViewModel(PlainDialogType.WordPlain);
-                vm.WordContent = plainItem.Content.ToString()!;
+                vm.WordContent = plainItem.Content!;
                 DialogResult result = await Dialog.ShowModal<AddWordImageTableDialog, AddWordImageTableDialogViewModel>(
                     vm,
                     null,
@@ -109,6 +123,7 @@ public partial class WordPlainDialogViewModel : ViewModelBase
                         Title = "写段文字吧", Mode = DialogMode.Info, Button = DialogButton.YesNo, ShowInTaskBar = false
                     }
                 );
+
                 if (result == DialogResult.Yes && !string.IsNullOrEmpty(vm.WordContent))
                 {
                     plainItem.Content = vm.WordContent;
@@ -118,7 +133,10 @@ public partial class WordPlainDialogViewModel : ViewModelBase
 
             case "图片":
                 vm = new AddWordImageTableDialogViewModel(PlainDialogType.ImagePlain);
-                vm.ImageFile = plainItem.Content.ToString()!;
+                vm.ImageFile = plainItem.Content!;
+                IStorageFile? sf = await App.StorageProvider.TryGetFileFromPathAsync(vm.ImageFile);
+                Stream stream = await sf.OpenReadAsync();
+                vm.ImageBitmap = new Bitmap(stream);
                 result = await Dialog.ShowModal<AddWordImageTableDialog, AddWordImageTableDialogViewModel>(
                     vm,
                     null,
@@ -128,14 +146,52 @@ public partial class WordPlainDialogViewModel : ViewModelBase
                     }
                 );
 
-                if (result == DialogResult.Yes && string.IsNullOrEmpty(vm.ImageFile))
+                if (result == DialogResult.Yes && !string.IsNullOrEmpty(vm.ImageFile))
                 {
                     plainItem.Content = vm.ImageFile;
                 }
+
                 break;
 
             case "表格":
-                MessageBox.ShowAsync("警告", "现在还未做");
+                vm = new AddWordImageTableDialogViewModel(PlainDialogType.TablePlain);
+                vm.SongGridData = new ObservableCollection<SongViewModel>(
+                    TableSongDict.Where(td => td.Key == SelectedId + 1).First().Value.Select(
+                        a => new SongViewModel
+                        {
+                            Title = a.Title,
+                            Artist = a.Artist,
+                            Album = a.Album,
+                            CountOfComment = a.CountOfComment,
+                            Duration = a.Duration,
+                            NetEaseId = int.Parse(a.Url.Substring(a.Url.LastIndexOf("=") + 1)),
+                            IsSelected = false
+                        }
+                    )
+                );
+
+                result = await Dialog.ShowModal<AddWordImageTableDialog, AddWordImageTableDialogViewModel>(
+                    vm,
+                    null,
+                    new DialogOptions
+                    {
+                        Title = "加个表格吧", Mode = DialogMode.Info, Button = DialogButton.YesNo, ShowInTaskBar = false
+                    }
+                );
+
+                if (result == DialogResult.Yes && vm.SongGridData.Count > 0)
+                {
+                    WordPlainItems[SelectedId].Content = $"歌曲{vm.SongGridData.Count}首";
+
+                    TableSongDict[SelectedId + 1] =
+                        vm.SongGridData.Select(a =>
+                            new Song(a.Title, a.Artist, 0, 0, a.Album, a.CountOfComment, a.NetEaseId)
+                            {
+                                Duration = a.Duration
+                            }
+                        );
+                }
+
                 break;
         }
     }
@@ -143,20 +199,44 @@ public partial class WordPlainDialogViewModel : ViewModelBase
     [RelayCommand]
     private void DeleteItem()
     {
+        if (WordPlainItems[SelectedId].ContentType == "表格")
+        {
+            TableSongDict.Remove(SelectedId + 1);
+        }
+
         WordPlainItems.RemoveAt(SelectedId);
     }
 
-    private int GetMaxId()
+    public JsonArray? ToJSON()
     {
-        int maxId = 0;
+        if (WordPlainItems.Count == 0)
+        {
+            return null;
+        }
+
+        var options = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), WriteIndented = true
+        };
+
+        var plainArray = new JsonArray();
         foreach (WordPlainItem plainItem in WordPlainItems)
         {
-            if (maxId < plainItem.Id)
+            switch (plainItem.ContentType)
             {
-                maxId = plainItem.Id;
+                case "文字":
+                    break;
+                case "图片":
+                    break;
+                case "表格":
+                    break;
             }
         }
 
-        return maxId + 1;
+        plainArray.Add(WordPlainItems[0]);
+
+        Console.WriteLine(JsonSerializer.Serialize(plainArray, options));
+
+        return plainArray;
     }
 }
