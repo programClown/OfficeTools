@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using OfficeTools.Models;
+using OfficeTools.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -8,12 +14,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Unicode;
 using System.Threading.Tasks;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using OfficeTools.Models;
-using OfficeTools.ViewModels;
 using Ursa.Controls;
 
 namespace OfficeTools.Controls;
@@ -89,7 +89,7 @@ public partial class WordPlainDialogViewModel : ViewModelBase
 
         if (result == DialogResult.Yes && vm.SongGridData.Count > 0)
         {
-            var newId = GetMaxId + 1;
+            int newId = GetMaxId + 1;
             WordPlainItems.Add(new WordPlainItem
                 {
                     Id = newId, ContentType = "表格", Content = $"歌曲{vm.SongGridData.Count}首"
@@ -225,15 +225,25 @@ public partial class WordPlainDialogViewModel : ViewModelBase
             switch (plainItem.ContentType)
             {
                 case "文字":
-                    break;
                 case "图片":
+                    plainArray.Add(plainItem);
                     break;
+
                 case "表格":
+                    var tableArray = new JsonArray();
+                    foreach (Song song in TableSongDict[plainItem.Id])
+                    {
+                        tableArray.Add(song);
+                    }
+                    plainArray.Add(
+                        new JsonObject
+                        {
+                            ["ContentType"] = "表格",
+                            ["Content"] = tableArray
+                        });
                     break;
             }
         }
-
-        plainArray.Add(WordPlainItems[0]);
 
         Console.WriteLine(JsonSerializer.Serialize(plainArray, options));
 
