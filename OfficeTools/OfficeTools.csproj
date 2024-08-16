@@ -25,7 +25,6 @@
         <PackageReference Include="FluentIcons.Avalonia.Fluent" Version="1.1.253"/>
         <PackageReference Include="Irihi.Ursa" Version="1.0.0"/>
         <PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.0.0"/>
-        <PackageReference Include="JsonSchema.Net" Version="7.2.0"/>
         <PackageReference Include="MuPDFCore.MuPDFRenderer" Version="1.10.2"/>
         <PackageReference Include="OfficeIMO.Word" Version="0.17.0"/>
         <PackageReference Include="PDFtoImage" Version="4.1.0"/>
