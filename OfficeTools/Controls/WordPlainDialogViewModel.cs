@@ -1,10 +1,4 @@
-﻿using Avalonia.Media.Imaging;
-using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using OfficeTools.Models;
-using OfficeTools.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -14,6 +8,12 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Unicode;
 using System.Threading.Tasks;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using OfficeTools.Models;
+using OfficeTools.ViewModels;
 using Ursa.Controls;
 
 namespace OfficeTools.Controls;
@@ -89,7 +89,7 @@ public partial class WordPlainDialogViewModel : ViewModelBase
 
         if (result == DialogResult.Yes && vm.SongGridData.Count > 0)
         {
-            int newId = GetMaxId + 1;
+            var newId = GetMaxId + 1;
             WordPlainItems.Add(new WordPlainItem
                 {
                     Id = newId, ContentType = "表格", Content = $"歌曲{vm.SongGridData.Count}首"
@@ -214,10 +214,7 @@ public partial class WordPlainDialogViewModel : ViewModelBase
             return null;
         }
 
-        var options = new JsonSerializerOptions
-        {
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), WriteIndented = true
-        };
+        var options = new JsonSerializerOptions { Encoder = JavaScriptEncoder.Create(UnicodeRanges.All) };
 
         var plainArray = new JsonArray();
         foreach (WordPlainItem plainItem in WordPlainItems)
@@ -235,17 +232,16 @@ public partial class WordPlainDialogViewModel : ViewModelBase
                     {
                         tableArray.Add(song);
                     }
+
                     plainArray.Add(
-                        new JsonObject
-                        {
-                            ["ContentType"] = "表格",
-                            ["Content"] = tableArray
-                        });
+                        new JsonObject { ["ContentType"] = "表格", ["Content"] = tableArray }
+                    );
+
                     break;
             }
         }
 
-        Console.WriteLine(JsonSerializer.Serialize(plainArray, options));
+        // Console.WriteLine(JsonSerializer.Serialize(plainArray, options));
 
         return plainArray;
     }

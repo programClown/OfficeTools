@@ -26,6 +26,7 @@
         <PackageReference Include="Irihi.Ursa" Version="1.0.0"/>
         <PackageReference Include="Irihi.Ursa.Themes.Semi" Version="1.0.0"/>
         <PackageReference Include="MuPDFCore.MuPDFRenderer" Version="1.10.2"/>
+        <PackageReference Include="NPOI" Version="2.7.1"/>
         <PackageReference Include="OfficeIMO.Word" Version="0.17.0"/>
         <PackageReference Include="PDFtoImage" Version="4.1.0"/>
         <PackageReference Include="Semi.Avalonia" Version="11.1.0.1"/>
@@ -45,4 +46,5 @@
     <ItemGroup>
         <Folder Include="Services\"/>
     </ItemGroup>
+
 </Project>

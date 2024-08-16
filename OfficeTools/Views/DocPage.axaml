@@ -216,7 +216,8 @@
                     Grid.Row="2"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
-                    Spacing="20">
+                    Spacing="10">
+                    <TextBlock Text="{Binding SavedDocFile}" />
                     <Button Command="{Binding SaveFileCommand}" Content="保存" />
                     <Button Command="{Binding ClearPanelCommand}" Content="清除" />
                 </StackPanel>

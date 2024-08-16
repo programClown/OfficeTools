@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace OfficeTools.Models;
 
@@ -61,20 +61,21 @@ public class WordCoverItem : ObservableObject
 public class WordFormItem : ObservableObject
 {
     private string _firstLevelContent = "这是第一段内容";
-    private string _firstLevelFontFamily;
+    private string _firstLevelFontFamily = "黑体";
     private int _firstLevelFontSize = 32;
     private string _firstLevelTitle = "第一章";
     private int _id;
 
     private string _secondLevelContent = "这是第二段内容";
-    private string _secondLevelFontFamily;
+    private string _secondLevelFontFamily = "微软雅黑";
     private int _secondLevelFontSize = 24;
     private string _secondLevelTitle = "1.1 报告艺术";
 
     private string _thirdLevelContent = "这是第三段内容";
-    private string _thirdLevelFontFamily;
+    private string _thirdLevelFontFamily = "宋体";
     private int _thirdLevelFontSize = 16;
     private string _thirdLevelTitle = "1.1.1 如何敲门";
+
 
     [Range(0, 10000)]
     public int Id
