@@ -42,9 +42,4 @@
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
     </ItemGroup>
 
-
-    <ItemGroup>
-        <Folder Include="Services\"/>
-    </ItemGroup>
-
 </Project>

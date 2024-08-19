@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
 using Ursa.Controls;
 
 namespace OfficeTools.ViewModels;
@@ -61,8 +61,8 @@ public class MainViewViewModel : ViewModelBase
     {
         Content = item!.Header switch
         {
-            "doc" => new DocPageViewModel(),
-            "docx" => new DocxPageViewModel(),
+            "doc" => new DocPageViewModel(DocType.Doc),
+            "docx" => new DocPageViewModel(DocType.Docx),
             "xls" => new XlsPageViewModel(),
             "xlsx" => new XlsxPageViewModel(),
             "设置" => new SettingsPageViewModel()

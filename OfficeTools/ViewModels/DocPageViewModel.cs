@@ -1,26 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using NPOI.OpenXmlFormats.Wordprocessing;
+using NPOI.XWPF.UserModel;
+using OfficeTools.Controls;
+using OfficeTools.Models;
+using SkiaSharp;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Unicode;
 using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using OfficeTools.Controls;
-using OfficeTools.Models;
-using SkiaSharp;
 using Ursa.Common;
 using Ursa.Controls;
 using Ursa.Controls.Options;
 
 namespace OfficeTools.ViewModels;
 
+public enum DocType
+{
+    Doc,
+    Docx
+}
+
 public partial class DocPageViewModel : ViewModelBase
 {
-    readonly private JsonArray _allWords = new();
+    private readonly JsonArray _allWords = new();
+    private readonly DocType _docType;
 
     [ObservableProperty]
     private List<string> _fontFamilyNames = new();
@@ -35,20 +46,25 @@ public partial class DocPageViewModel : ViewModelBase
     private string _savedDocFile;
 
     [ObservableProperty]
+    private string _suitableWordTitle;
+
+    [ObservableProperty]
     private WordCoverItem _wordCover;
 
     [ObservableProperty]
     private List<WordFormItem> _wordFromItems;
 
-    public DocPageViewModel()
+    public DocPageViewModel(DocType docType)
     {
+        _docType = docType;
+        SuitableWordTitle = _docType == DocType.Doc ? "适用于Word 2003/2007" : "适用于Word 2013/2016/2019+";
         // foreach (var fontFamily in FontFamily.StandardFamilies)
         // {
         //     FontFamilyNames.Add(fontFamily);
         // }
 
-        var ft = SKFontManager.Default.FontFamilyCount;
-        for (var i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
+        int ft = SKFontManager.Default.FontFamilyCount;
+        for (int i = 0; i < SKFontManager.Default.FontFamilyCount; i++)
         {
             FontFamilyNames.Add(SKFontManager.Default.GetFamilyName(i));
         }
@@ -165,13 +181,16 @@ public partial class DocPageViewModel : ViewModelBase
     [RelayCommand]
     private async Task SaveFile()
     {
-        IStorageFile? result =
-            await App.StorageProvider.SaveFilePickerAsync(
+        IStorageFile? result;
+            result = await App.StorageProvider.SaveFilePickerAsync(
                 new FilePickerSaveOptions
                 {
-                    Title = "Open File",
+                    Title = "Save File",
                     FileTypeChoices =
-                        new List<FilePickerFileType> { new("") { Patterns = new[] { "*.doc" } } }
+                    [
+                        new FilePickerFileType("Docs") { Patterns = ["*.doc"] },
+                        new FilePickerFileType("Docxs") { Patterns = ["*.docx"] },
+                    ]
                 }
             );
 
@@ -187,5 +206,26 @@ public partial class DocPageViewModel : ViewModelBase
         SavedDocFile = "";
         WordCover = new WordCoverItem();
         WordFromItems = new List<WordFormItem> { new() { Id = 0 }, new() { Id = 1 } };
+    }
+
+    private void SaveDoc()
+    {
+        var fs = new FileStream(SavedDocFile, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        var doc = new XWPFDocument();
+        XWPFStyles styles = doc.CreateStyles();
+        var sectPr = new CT_SectPr();
+        // A4
+        sectPr.pgSz.w = 11906;
+        sectPr.pgSz.h = 16838;
+        doc.Document.body.sectPr = sectPr;
+
+
+        doc.Write(fs);
+        fs.Close();
+        doc.Close();
+    }
+
+    private void SaveDocx()
+    {
     }
 }

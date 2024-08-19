@@ -14,27 +14,31 @@
     x:DataType="vm:DocPageViewModel"
     mc:Ignorable="d">
     <Grid RowDefinitions="Auto, *">
-        <StackPanel
-            Grid.Row="0"
-            IsEnabled="{Binding IsOperateEnable}"
-            Orientation="Horizontal">
-            <u:ButtonGroup
-                Classes="Secondary Borderless Small"
-                CommandBinding="{Binding InvokeCommand}"
-                CommandParameterBinding="{Binding Name}"
-                ItemsSource="{Binding SwitchButtonItems}">
-                <u:ButtonGroup.ItemTemplate>
-                    <DataTemplate x:DataType="models:ButtonItem">
-                        <TextBlock ToolTip.Tip="{Binding Tips}">
-                            <ic:SymbolIcon
-                                FontSize="16"
-                                IconVariant="Light"
-                                Symbol="{Binding Name}" />
-                        </TextBlock>
-                    </DataTemplate>
-                </u:ButtonGroup.ItemTemplate>
-            </u:ButtonGroup>
+        <StackPanel Grid.Row="0">
+            <TextBlock
+                Classes="H3"
+                Text="{Binding SuitableWordTitle}"
+                Theme="{StaticResource TitleTextBlock}" />
+            <StackPanel IsEnabled="{Binding IsOperateEnable}" Orientation="Horizontal">
+                <u:ButtonGroup
+                    Classes="Secondary Borderless Small"
+                    CommandBinding="{Binding InvokeCommand}"
+                    CommandParameterBinding="{Binding Name}"
+                    ItemsSource="{Binding SwitchButtonItems}">
+                    <u:ButtonGroup.ItemTemplate>
+                        <DataTemplate x:DataType="models:ButtonItem">
+                            <TextBlock ToolTip.Tip="{Binding Tips}">
+                                <ic:SymbolIcon
+                                    FontSize="16"
+                                    IconVariant="Light"
+                                    Symbol="{Binding Name}" />
+                            </TextBlock>
+                        </DataTemplate>
+                    </u:ButtonGroup.ItemTemplate>
+                </u:ButtonGroup>
+            </StackPanel>
         </StackPanel>
+
         <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto,*">
             <Grid
                 Grid.Column="0"
