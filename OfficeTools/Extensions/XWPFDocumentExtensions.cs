@@ -1,9 +1,9 @@
-using NPOI.OpenXmlFormats.Wordprocessing;
-using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
+using Avalonia.Media.Imaging;
+using NPOI.OpenXmlFormats.Wordprocessing;
+using NPOI.XWPF.UserModel;
 
 namespace OfficeTools.Extensions;
 
@@ -69,8 +69,10 @@ public static class XWPFDocumentExtensions
                 {
                     list.Add(cell.GetText());
                 }
+
                 ts.Add(list);
             }
+
             tables.Add(ts);
         }
     }

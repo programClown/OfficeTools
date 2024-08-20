@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeTools", "OfficeTools\OfficeTools.csproj", "{1C4319D1-3AA8-4029-A4AA-BA6AF1B2750E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeTools.Core", "OfficeTools.Core\OfficeTools.Core.csproj", "{6C0E33C8-4591-46D4-BC65-3DCADF327C6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{1C4319D1-3AA8-4029-A4AA-BA6AF1B2750E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C4319D1-3AA8-4029-A4AA-BA6AF1B2750E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C4319D1-3AA8-4029-A4AA-BA6AF1B2750E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C0E33C8-4591-46D4-BC65-3DCADF327C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C0E33C8-4591-46D4-BC65-3DCADF327C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C0E33C8-4591-46D4-BC65-3DCADF327C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C0E33C8-4591-46D4-BC65-3DCADF327C6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

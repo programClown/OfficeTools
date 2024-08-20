@@ -31,8 +31,8 @@
         <PackageReference Include="PDFtoImage" Version="4.1.0"/>
         <PackageReference Include="Semi.Avalonia" Version="11.1.0.1"/>
         <PackageReference Include="Semi.Avalonia.DataGrid" Version="11.1.0"/>
-        <PackageReference Include="Sentry" Version="4.9.0"/>
-        <PackageReference Include="Sentry.Serilog" Version="4.9.0"/>
+        <PackageReference Include="Sentry" Version="4.10.1"/>
+        <PackageReference Include="Sentry.Serilog" Version="4.10.1"/>
         <PackageReference Include="VectSharp.PDF" Version="3.1.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0"/>
@@ -40,6 +40,16 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Folder Include="Helper\"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\OfficeTools.Core\OfficeTools.Core.csproj"/>
     </ItemGroup>
 
 </Project>
