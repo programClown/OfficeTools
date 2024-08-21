@@ -3,12 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Text.RegularExpressions;
+using NLog;
 using OfficeTools.Core.Exceptions;
 using OfficeTools.Core.Extensions;
 using OfficeTools.Core.Models.FileInterfaces;
 using OfficeTools.Core.Models.Progress;
 using OfficeTools.Core.Processes;
-using Serilog;
 using SharpCompress.Common;
 using SharpCompress.Readers;
 using Timer = System.Timers.Timer;
@@ -20,7 +20,7 @@ public record struct ArchiveInfo(ulong Size, ulong CompressedSize);
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public static partial class ArchiveHelper
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     /// <summary>
     ///     Platform-specific 7z executable name.
@@ -298,7 +298,7 @@ public static partial class ArchiveHelper
 
         progress?.Report(new ProgressReport(progress: 1, message: "Done extracting"));
         progressMonitor?.Stop();
-        Logger.Information("Finished extracting archive {}", archivePath);
+        Logger.Info("Finished extracting archive {}", archivePath);
     }
 
     /// <summary>
@@ -377,7 +377,7 @@ public static partial class ArchiveHelper
                     }
                     catch (IOException e)
                     {
-                        Logger.Warning($"Could not extract symbolic link, copying file instead: {e.Message}");
+                        Logger.Warn($"Could not extract symbolic link, copying file instead: {e.Message}");
                     }
                 }
 

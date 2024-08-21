@@ -1,6 +1,6 @@
-﻿using OfficeTools.Core.Models;
+﻿using NLog;
+using OfficeTools.Core.Models;
 using Python.Runtime;
-using Serilog;
 
 namespace OfficeTools.Core.Python;
 
@@ -9,7 +9,7 @@ namespace OfficeTools.Core.Python;
 /// </summary>
 public class ArgParser
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
     readonly private string moduleName;
     readonly private IPyRunner pyRunner;
     readonly private string rootPath;
@@ -103,7 +103,7 @@ public class ArgParser
                     var optionType = type == null ? LaunchOptionType.Bool : PyObjectToOptionType(type);
                     if (optionType == null)
                     {
-                        Logger.Warning("Skipping option {Dest} with type {Name}", dest, type);
+                        Logger.Warn("Skipping option {Dest} with type {Name}", dest, type);
                         continue;
                     }
 

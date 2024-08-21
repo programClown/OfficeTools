@@ -1,17 +1,17 @@
 ﻿using System.Text.Json;
 using System.Text.RegularExpressions;
+using NLog;
 using OfficeTools.Core.Exceptions;
 using OfficeTools.Core.Helper;
 using OfficeTools.Core.Models;
 using OfficeTools.Core.Models.FileInterfaces;
 using OfficeTools.Core.Processes;
-using Serilog;
 
 namespace OfficeTools.Core.Python;
 
 public class PyBaseInstall(DirectoryPath rootPath, MajorMinorVersion? version = null)
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     readonly private Lazy<MajorMinorVersion> _lazyVersion =
         version != null

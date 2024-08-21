@@ -1,14 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Text;
+using NLog;
 using OfficeTools.Core.Exceptions;
 using OfficeTools.Core.Helper;
-using Serilog;
 
 namespace OfficeTools.Core.Processes;
 
 public static class ProcessRunner
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     /// <summary>
     ///     Opens the given URL in the default browser.
@@ -379,7 +379,7 @@ public static class ProcessRunner
         var escapedCommand = command.Replace("\"", "\\\"");
         var arguments = $"-c \"{escapedCommand}\"";
 
-        Logger.Information($"Running bash command [bash {arguments}]");
+        Logger.Info($"Running bash command [bash {arguments}]");
 
         var processInfo = new ProcessStartInfo("bash", arguments)
         {

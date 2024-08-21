@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Serilog;
+using NLog;
 
 namespace OfficeTools.Core.Processes;
 
@@ -16,7 +16,7 @@ public readonly record struct ApcMessage
     public const char ApcChar = (char)0x9F;
     public const char StChar = (char)0x9C;
     public const string CustomPrefix = "[SM;";
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     [JsonPropertyName("type")]
     public required ApcType Type { get; init; }
@@ -52,7 +52,7 @@ public readonly record struct ApcMessage
         }
         catch (Exception e)
         {
-            Logger.Warning($"Failed to deserialize APC message: {e.Message}");
+            Logger.Warn($"Failed to deserialize APC message: {e.Message}");
             return false;
         }
     }

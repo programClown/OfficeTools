@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Microsoft.Win32.SafeHandles;
-using Serilog;
+using NLog;
 using Process = System.Diagnostics.Process;
 
 namespace OfficeTools.Core.Helper;
@@ -21,7 +21,7 @@ namespace OfficeTools.Core.Helper;
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public static partial class ProcessTracker
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     readonly private static Lazy<JobObject?> ProcessTrackerJobLazy =
         new(() =>

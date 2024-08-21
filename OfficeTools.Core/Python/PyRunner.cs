@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using NLog;
 using OfficeTools.Core.Attributes;
 using OfficeTools.Core.Extensions;
 using OfficeTools.Core.Helper;
@@ -7,7 +8,6 @@ using OfficeTools.Core.Models.FileInterfaces;
 using OfficeTools.Core.Processes;
 using OfficeTools.Core.Python.Interop;
 using Python.Runtime;
-using Serilog;
 
 namespace OfficeTools.Core.Python;
 
@@ -20,7 +20,7 @@ public class PyRunner : IPyRunner
 {
     // This is same for all platforms
     public const string PythonDirName = "Python310";
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     readonly private static SemaphoreSlim PyRunning = new(1, 1);
     public PyIOStream? StdErrStream;
@@ -73,14 +73,14 @@ public class PyRunner : IPyRunner
         if (PythonEngine.IsInitialized)
             return;
 
-        Logger.Information("Setting PYTHONHOME={PythonDir}", PythonDir.ToRepr());
+        Logger.Info("Setting PYTHONHOME={PythonDir}", PythonDir.ToRepr());
 
         // Append Python path to PATH
         var newEnvPath = Compat.GetEnvPathWithExtensions(PythonDir);
         Logger.Debug("Setting PATH={NewEnvPath}", newEnvPath.ToRepr());
         Environment.SetEnvironmentVariable("PATH", newEnvPath, EnvironmentVariableTarget.Process);
 
-        Logger.Information("Initializing Python runtime with DLL: {DllPath}", PythonDllPath);
+        Logger.Info("Initializing Python runtime with DLL: {DllPath}", PythonDllPath);
         // Check PythonDLL exists
         if (!File.Exists(PythonDllPath))
         {

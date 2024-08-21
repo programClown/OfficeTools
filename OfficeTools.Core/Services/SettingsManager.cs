@@ -6,18 +6,18 @@ using System.Reflection;
 using System.Text.Json;
 using AsyncAwaitBestPractices;
 using CompiledExpressions;
+using Microsoft.Extensions.Logging;
 using OfficeTools.Core.Attributes;
 using OfficeTools.Core.Helper;
 using OfficeTools.Core.Models;
 using OfficeTools.Core.Models.FileInterfaces;
 using OfficeTools.Core.Models.Settings;
 using OfficeTools.Core.Python;
-using Serilog;
 
 namespace OfficeTools.Core.Services;
 
 [Singleton(typeof(ISettingsManager))]
-public class SettingsManager(ILogger logger) : ISettingsManager
+public class SettingsManager(ILogger<SettingsManager> logger) : ISettingsManager
 {
     readonly private SemaphoreSlim fileLock = new(1, 1);
 
@@ -196,7 +196,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
             if (args.IsRelay && ReferenceEquals(sender, source))
                 return;
 
-            logger.Debug(
+            logger.LogTrace(
                 "[RelayPropertyFor] " + "Settings.{SettingsProperty:l} -> {SourceType:l}.{SourceProperty:l}",
                 settingsPropertyPath,
                 sourceTypeName,
@@ -212,7 +212,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
             if (args.PropertyName != sourcePropertyPath)
                 return;
 
-            logger.Debug(
+            logger.LogTrace(
                 "[RelayPropertyFor] {SourceType:l}.{SourceProperty:l} -> Settings.{SettingsProperty:l}",
                 sourceTypeName,
                 sourcePropertyPath,
@@ -234,7 +234,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
             }
             else
             {
-                logger.Warning(
+                logger.LogWarning(
                     "[RelayPropertyFor] LibraryDir not set when saving ({SourceType:l}.{SourceProperty:l} -> Settings.{SettingsProperty:l})",
                     sourceTypeName,
                     sourcePropertyPath,
@@ -306,7 +306,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
         // 0. Check Override
         if (libraryDirOverride is not null)
         {
-            logger.Information("Using library override path {Path}", libraryDirOverride.FullPath);
+            logger.LogInformation("Using library override path {Path}", libraryDirOverride.FullPath);
 
             LibraryDir = libraryDirOverride;
             SetStaticLibraryPaths();
@@ -348,7 +348,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
         }
         catch (Exception e)
         {
-            logger.Warning("Failed to read library.json in AppData: {Message}", e.Message);
+            logger.LogWarning("Failed to read library.json in AppData: {Message}", e.Message);
         }
 
         return false;
@@ -453,7 +453,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
 
             if (fileStream.Length == 0)
             {
-                logger.Warning("Settings file is empty, using default settings");
+                logger.LogWarning("Settings file is empty, using default settings");
                 return;
             }
 
@@ -496,7 +496,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
 
             if (fileStream.Length == 0)
             {
-                logger.Warning("Settings file is empty, using default settings");
+                logger.LogWarning("Settings file is empty, using default settings");
                 return;
             }
 
@@ -541,7 +541,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
             // Check disk space
             if (SystemInfo.GetDiskFreeSpaceBytes(SettingsFile) is < 1 * SystemInfo.Mebibyte)
             {
-                logger.Warning("Not enough disk space to save settings");
+                logger.LogWarning("Not enough disk space to save settings");
                 return;
             }
 
@@ -552,7 +552,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
 
             if (jsonBytes.Length == 0)
             {
-                logger.Warning("JsonSerializer returned empty bytes for some reason");
+                logger.LogWarning("JsonSerializer returned empty bytes for some reason");
                 return;
             }
 
@@ -590,7 +590,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
             // Check disk space
             if (SystemInfo.GetDiskFreeSpaceBytes(SettingsFile) is < 1 * SystemInfo.Mebibyte)
             {
-                logger.Warning("Not enough disk space to save settings");
+                logger.LogWarning("Not enough disk space to save settings");
                 return;
             }
 
@@ -601,7 +601,7 @@ public class SettingsManager(ILogger logger) : ISettingsManager
 
             if (jsonBytes.Length == 0)
             {
-                logger.Warning("JsonSerializer returned empty bytes for some reason");
+                logger.LogWarning("JsonSerializer returned empty bytes for some reason");
                 return;
             }
 

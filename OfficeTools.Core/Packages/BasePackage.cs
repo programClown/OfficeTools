@@ -1,6 +1,6 @@
 ﻿using Octokit;
-using OfficeTools.Core.HardwareInfo;
 using OfficeTools.Core.Helper;
+using OfficeTools.Core.Helper.HardwareInfo;
 using OfficeTools.Core.Models;
 using OfficeTools.Core.Models.Database;
 using OfficeTools.Core.Models.FileInterfaces;

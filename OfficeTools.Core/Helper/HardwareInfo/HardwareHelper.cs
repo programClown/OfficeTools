@@ -5,15 +5,14 @@ using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using Hardware.Info;
 using Microsoft.Win32;
+using NLog;
 using OfficeTools.Core.Extensions;
-using OfficeTools.Core.Helper;
-using Serilog;
 
-namespace OfficeTools.Core.HardwareInfo;
+namespace OfficeTools.Core.Helper.HardwareInfo;
 
 public static partial class HardwareHelper
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     private static IReadOnlyList<GpuInfo>? cachedGpuInfos;
 
@@ -194,7 +193,7 @@ public static partial class HardwareHelper
         }
         catch (Exception ex)
         {
-            Logger.Warning(ex, "Failed to get memory info");
+            Logger.Warn(ex, "Failed to get memory info");
 
             memoryInfo = default;
             return false;

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using NLog;
 using OfficeTools.Core.Exceptions;
 using OfficeTools.Core.Extensions;
 using OfficeTools.Core.Helper;
@@ -10,7 +11,6 @@ using OfficeTools.Core.Models;
 using OfficeTools.Core.Models.FileInterfaces;
 using OfficeTools.Core.Processes;
 using Salaros.Configuration;
-using Serilog;
 
 namespace OfficeTools.Core.Python;
 
@@ -19,7 +19,7 @@ namespace OfficeTools.Core.Python;
 /// </summary>
 public class PyVenvRunner : IDisposable, IAsyncDisposable
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     private string? lastSetPyvenvCfgPath;
 
@@ -115,7 +115,7 @@ public class PyVenvRunner : IDisposable, IAsyncDisposable
             }
             catch (OperationCanceledException e)
             {
-                Logger.Warning(e, "Venv Process did not exit in time in DisposeAsync");
+                Logger.Warn(e, "Venv Process did not exit in time in DisposeAsync");
 
                 Process.CancelStreamReaders();
             }
@@ -220,7 +220,7 @@ public class PyVenvRunner : IDisposable, IAsyncDisposable
             throw new FileNotFoundException("pyvenv.cfg not found", cfgPath);
         }
 
-        Logger.Information("Updating pyvenv.cfg with embedded Python directory {PyDir}", pythonDirectory);
+        Logger.Info("Updating pyvenv.cfg with embedded Python directory {PyDir}", pythonDirectory);
 
         // Insert a top section
         var topSection = "[top]" + Environment.NewLine;
@@ -544,7 +544,7 @@ public class PyVenvRunner : IDisposable, IAsyncDisposable
 
         SetPyvenvCfg(BaseInstall.RootPath);
 
-        Logger.Information(
+        Logger.Info(
             "Launching venv process [{PythonPath}] "
             + "in working directory [{WorkingDirectory}] with args {Arguments}",
             PythonPath,
@@ -559,7 +559,7 @@ public class PyVenvRunner : IDisposable, IAsyncDisposable
                     {
                         if (SuppressOutput.Any(s.Text.Contains))
                         {
-                            Logger.Information("Filtered output: {S}", s);
+                            Logger.Info("Filtered output: {S}", s);
                             return;
                         }
 
@@ -619,7 +619,7 @@ public class PyVenvRunner : IDisposable, IAsyncDisposable
             }
         }
 
-        Logger.Information("PATH: {Path}", env["PATH"]);
+        Logger.Info("PATH: {Path}", env["PATH"]);
 
         Process = ProcessRunner.StartAnsiProcess(
             PythonPath,

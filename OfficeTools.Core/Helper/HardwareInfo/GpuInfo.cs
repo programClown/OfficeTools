@@ -1,6 +1,4 @@
-﻿using OfficeTools.Core.Helper;
-
-namespace OfficeTools.Core.HardwareInfo;
+﻿namespace OfficeTools.Core.Helper.HardwareInfo;
 
 public record GpuInfo
 {

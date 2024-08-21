@@ -1,16 +1,16 @@
 ﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using NLog;
 using OfficeTools.Core.Exceptions;
 using OfficeTools.Core.Models.FileInterfaces;
 using OfficeTools.Core.Models.Progress;
-using Serilog;
 
 namespace OfficeTools.Core.Helper;
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public static class FileTransfers
 {
-    readonly private static ILogger Logger = Log.Logger;
+    readonly private static Logger Logger = LogManager.GetCurrentClassLogger();
 
     /// <summary>
     ///     Determines suitable buffer size based on stream length.
@@ -218,7 +218,7 @@ public static class FileTransfers
                 // For same hash, just delete original file
                 if (sourceHash == destinationHash)
                 {
-                    Logger.Information(
+                    Logger.Info(
                         $"Deleted source file {sourceFile.Name} as it already exists in {Path.GetDirectoryName(destinationFile)}."
                         + $" Matching Blake3 hash: {sourceHash}"
                     );

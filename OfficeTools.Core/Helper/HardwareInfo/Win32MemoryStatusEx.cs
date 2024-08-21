@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace OfficeTools.Core.HardwareInfo;
+namespace OfficeTools.Core.Helper.HardwareInfo;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct Win32MemoryStatusEx

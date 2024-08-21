@@ -1,4 +1,4 @@
-﻿namespace OfficeTools.Core.HardwareInfo;
+﻿namespace OfficeTools.Core.Helper.HardwareInfo;
 
 public readonly record struct MemoryInfo
 {
